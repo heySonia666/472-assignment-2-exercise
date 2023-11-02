@@ -1,20 +1,37 @@
-# read and load the dataset "mtcars"
 library(dplyr)
-data("mtcars")
-transform_data <- function(data) {
-  # Check if the 'disp' column exists in the dataset
-  if (!'disp' %in% colnames(data)) {
-    stop("The dataset must contain an 'disp' column for Displacement.")
+transform_data <- function(data, transformation_type = "square") {
+  # Check if the necessary columns exist in the dataset
+  required_columns <- c("disp", "mpg", "wt")
+  if (!all(required_columns %in% colnames(data))) {
+    stop("The dataset must contain the following columns: disp, mpg, wt.")
   }
-  
- # Use mutate to apply the transformation
-  data <- data %>%
-    mutate(disp = disp * 2)
+  # Apply different transformations based on the value of transformation_type
+  if (transformation_type == "triple") {
+    # Increase the Displacement ('disp') of each car by 200%
+    data <- data %>%
+      mutate(disp = disp * 3)
+  } else if (transformation_type == "square") {
+    # Square the Displacement ('disp') of each car
+    data <- data %>%
+      mutate(disp = disp ^ 2)
+  } else if (transformation_type == "sqrt") {
+    # SQRT the Displacement ('disp') of each car
+    data <- data %>%
+      mutate(disp = sqrt(disp))
+  } else {
+    stop("Invalid transformation type. Please choose 'triple', 'square', or 'sqrt'.")
+  }
   
   # Return the transformed dataset
   return(data)
 }
 
 # Example usage with the mtcars dataset
-transformed_data <- transform_data(mtcars)
-print(transformed_data)
+transformed_data_triple <- transform_data(mtcars, "triple")
+print(transformed_data_triple)
+
+transformed_data_square <- transform_data(mtcars, "square")
+print(transformed_data_square)
+
+transformed_data_sqrt <- transform_data(mtcars, "sqrt")
+print(transformed_data_sqrt)
